@@ -1,0 +1,170 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12 text-center mb-5">
+        <h1 class="display-4 text-primary">
+            <i class="fas fa-futbol"></i> Bienvenido a Fútbol Manager
+        </h1>
+        <p class="lead">Gestiona toda la información de tus equipos favoritos de forma fácil e intuitiva</p>
+    </div>
+</div>
+
+<div class="row justify-content-center">
+    {% if not user.is_authenticated %}
+    <!-- Sección para usuarios no autenticados -->
+    <div class="col-md-8">
+        <div class="card shadow">
+            <div class="card-header bg-primary text-white">
+                <h3 class="text-center"><i class="fas fa-user-plus"></i> Comienza Ahora</h3>
+            </div>
+            <div class="card-body">
+                <div class="row text-center">
+                    <div class="col-md-6 mb-3">
+                        <div class="p-4">
+                            <i class="fas fa-sign-in-alt fa-3x text-primary mb-3"></i>
+                            <h4>¿Ya tienes cuenta?</h4>
+                            <p>Accede a tu panel de control</p>
+                            <a href="{% url 'login' %}" class="btn btn-primary btn-lg">
+                                <i class="fas fa-sign-in-alt me-2"></i>Iniciar Sesión
+                            </a>
+                        </div>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <div class="p-4">
+                            <i class="fas fa-user-plus fa-3x text-success mb-3"></i>
+                            <h4>¿Nuevo usuario?</h4>
+                            <p>Regístrate gratuitamente</p>
+                            <a href="{% url 'registro' %}" class="btn btn-success btn-lg">
+                                <i class="fas fa-user-plus me-2"></i>Registrarse
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% else %}
+    <!-- Sección para usuarios autenticados -->
+    <div class="col-md-10">
+        <div class="row">
+            <div class="col-md-4 mb-4">
+                <div class="card text-center h-100 shadow">
+                    <div class="card-header bg-success text-white">
+                        <h4><i class="fas fa-plus-circle"></i> Nuevo Equipo</h4>
+                    </div>
+                    <div class="card-body">
+                        <i class="fas fa-users fa-4x text-success mb-3"></i>
+                        <p>Agrega un nuevo equipo de fútbol al sistema</p>
+                    </div>
+                    <div class="card-footer">
+                        <a href="{% url 'crear_equipo' %}" class="btn btn-success w-100">
+                            <i class="fas fa-plus me-2"></i>Crear Equipo
+                        </a>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-4 mb-4">
+                <div class="card text-center h-100 shadow">
+                    <div class="card-header bg-info text-white">
+                        <h4><i class="fas fa-list"></i> Ver Equipos</h4>
+                    </div>
+                    <div class="card-body">
+                        <i class="fas fa-futbol fa-4x text-info mb-3"></i>
+                        <p>Explora todos los equipos registrados en el sistema</p>
+                    </div>
+                    <div class="card-footer">
+                        <a href="{% url 'lista_equipos' %}" class="btn btn-info w-100 text-white">
+                            <i class="fas fa-eye me-2"></i>Ver Lista
+                        </a>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-4 mb-4">
+                <div class="card text-center h-100 shadow">
+                    <div class="card-header bg-warning text-dark">
+                        <h4><i class="fas fa-chart-bar"></i> Estadísticas</h4>
+                    </div>
+                    <div class="card-body">
+                        <i class="fas fa-chart-pie fa-4x text-warning mb-3"></i>
+                        <p>Visualiza estadísticas y reportes del sistema</p>
+                    </div>
+                    <div class="card-footer">
+                        <button class="btn btn-warning w-100" disabled>
+                            <i class="fas fa-chart-bar me-2"></i>Próximamente
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="row mt-4">
+            <div class="col-12">
+                <div class="card shadow">
+                    <div class="card-header bg-primary text-white">
+                        <h4><i class="fas fa-rocket"></i> Acciones Rápidas</h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="d-grid gap-2 d-md-flex justify-content-md-center">
+                            <a href="{% url 'crear_equipo' %}" class="btn btn-primary me-md-2">
+                                <i class="fas fa-plus me-2"></i>Crear Equipo
+                            </a>
+                            <a href="{% url 'lista_equipos' %}" class="btn btn-outline-primary me-md-2">
+                                <i class="fas fa-list me-2"></i>Ver Equipos
+                            </a>
+                            <a href="{% url 'logout' %}" class="btn btn-outline-danger">
+                                <i class="fas fa-sign-out-alt me-2"></i>Cerrar Sesión
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+</div>
+
+{% if user.is_authenticated %}
+<div class="row mt-5">
+    <div class="col-12">
+        <div class="card shadow">
+            <div class="card-header bg-light">
+                <h4><i class="fas fa-history"></i> Tus Equipos Recientes</h4>
+            </div>
+            <div class="card-body">
+                {% if equipos %}
+                <div class="row">
+                    {% for equipo in equipos %}
+                    <div class="col-md-4 mb-3">
+                        <div class="card">
+                            <div class="card-body">
+                                <h5 class="card-title">{{ equipo.nombre }}</h5>
+                                <p class="card-text">
+                                    <small class="text-muted">
+                                        <i class="fas fa-map-marker-alt"></i> {{ equipo.ciudad }}, {{ equipo.pais }}
+                                    </small>
+                                </p>
+                                <a href="{% url 'editar_equipo' equipo.id %}" class="btn btn-sm btn-outline-primary">
+                                    <i class="fas fa-edit"></i> Editar
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <p class="text-center text-muted">No has creado ningún equipo todavía.</p>
+                <div class="text-center">
+                    <a href="{% url 'crear_equipo' %}" class="btn btn-primary">
+                        <i class="fas fa-plus"></i> Crear tu Primer Equipo
+                    </a>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+{% endblock %}
